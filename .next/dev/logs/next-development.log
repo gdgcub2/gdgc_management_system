@@ -1,0 +1,106 @@
+[00:00:00.762] Server  LOG     ✓ Ready in 591ms
+[00:00:04.766] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:28.565] Server  WARN    ⚠ Cross origin request detected from 192.168.1.2 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.525] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:14:54.526] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/dashboard/member. Falling back to browser navigation. {}
+[00:16:48.877] Server  LOG     ✓ Compiled in 76ms
+[00:16:48.981] Browser ERROR   ./app/dashboard/member/page.tsx:75:73
+Parsing ecmascript source code failed
+  73 |         </div>
+  74 |       </motion.div>
+> 75 |       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity:  y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+     |                                                                         ^
+  76 |         <div className="flex items-center justify-between mb-6">
+  77 |           <h3 className="text-lg font-semibold text-gray-900">Badges & Achievements</h3>
+  78 |           <div className="text-sm text-gray-600">{badges.filter((b) => b.earned).length} / {badges.length} earned</div>
+
+Expected '</', got ':'
+
+Import traces:
+  Client Component Browser:
+    ./app/dashboard/member/page.tsx [Client Component Browser]
+    ./app/dashboard/member/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/dashboard/member/page.tsx [Client Component SSR]
+    ./app/dashboard/member/page.tsx [Server Component]
+[00:16:49.952] Browser ERROR   ./app/dashboard/member/page.tsx:75:73
+Parsing ecmascript source code failed
+  73 |         </div>
+  74 |       </motion.div>
+> 75 |       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity:  y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+     |                                                                         ^
+  76 |         <div className="flex items-center justify-between mb-6">
+  77 |           <h3 className="text-lg font-semibold text-gray-900">Badges & Achievements</h3>
+  78 |           <div className="text-sm text-gray-600">{badges.filter((b) => b.earned).length} / {badges.length} earned</div>
+
+Expected '</', got ':'
+
+Import traces:
+  Client Component Browser:
+    ./app/dashboard/member/page.tsx [Client Component Browser]
+    ./app/dashboard/member/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/dashboard/member/page.tsx [Client Component SSR]
+    ./app/dashboard/member/page.tsx [Server Component]
+[00:18:30.705] Server  LOG     ✓ Compiled in 127ms
+[00:20:25.977] Browser ERROR   ./app/dashboard/member/page.tsx:75:73
+Parsing ecmascript source code failed
+  73 |         </div>
+  74 |       </motion.div>
+> 75 |       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity:  y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+     |                                                                         ^
+  76 |         <div className="flex items-center justify-between mb-6">
+  77 |           <h3 className="text-lg font-semibold text-gray-900">Badges & Achievements</h3>
+  78 |           <div className="text-sm text-gray-600">{badges.filter((b) => b.earned).length} / {badges.length} earned</div>
+
+Expected '</', got ':'
+
+Import traces:
+  Client Component Browser:
+    ./app/dashboard/member/page.tsx [Client Component Browser]
+    ./app/dashboard/member/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/dashboard/member/page.tsx [Client Component SSR]
+    ./app/dashboard/member/page.tsx [Server Component]
+[00:21:58.863] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:21:58.863] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:26:28.760] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:26:28.760] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:32:47.930] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:32:47.930] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:33:18.343] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:33:18.343] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:33:43.534] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:33:43.534] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:40:50.431] Server  LOG     ✓ Compiled in 564ms
+[00:40:59.795] Server  LOG     ✓ Compiled in 58ms
+[00:49:42.470] Server  LOG     ✓ Compiled in 109ms
+[00:50:03.628] Server  LOG     ✓ Compiled in 67ms
+[00:50:19.237] Server  LOG     ✓ Compiled in 48ms
