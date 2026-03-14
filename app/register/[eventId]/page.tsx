@@ -12,12 +12,17 @@ import {
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useParams } from "next/navigation";
+import { getEventData } from "@/lib/events-data";
 
 export default function RegistrationPage() {
   const params = useParams();
-  const eventId = params?.eventId as string | undefined;
+  const eventId = params?.eventId as string;
+
+  // Get event details dynamically from eventId
+  const event = getEventData(eventId);
 
   const [isRegistered, setIsRegistered] = useState(false);
+  const [registrationId] = useState(() => Date.now());
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,7 +51,6 @@ export default function RegistrationPage() {
             >
               <CheckCircle className="w-8 h-8 text-white" />
             </motion.div>
-
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
               Registration Confirmed!
             </h2>
@@ -58,7 +62,7 @@ export default function RegistrationPage() {
           <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
             <div className="flex justify-center mb-4">
               <QRCodeSVG
-                value={`EVENT-2026-${Date.now()}`}
+                value={`EVENT-2026-${registrationId}`}
                 size={200}
                 level="H"
                 includeMargin
@@ -68,9 +72,9 @@ export default function RegistrationPage() {
               <div className="font-semibold text-gray-900 mb-1">
                 {formData.name}
               </div>
-              <div className="text-sm text-gray-600">Cloud Study Jam</div>
+              <div className="text-sm text-gray-600">{event.title}</div>
               <div className="text-xs text-gray-500 mt-2">
-                ID: EVENT-2026-{Date.now().toString().slice(-6)}
+                ID: EVENT-2026-{registrationId.toString().slice(-6)}
               </div>
             </div>
           </div>
@@ -87,7 +91,7 @@ export default function RegistrationPage() {
           </div>
 
           <p className="text-xs text-center text-gray-500 mt-6">
-            Please save this QR code. You'll need it for check-in at the event.
+            Please save this QR code. You&apos;ll need it for check-in at the event.
           </p>
         </motion.div>
       </div>
@@ -96,6 +100,8 @@ export default function RegistrationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#4285F4]/10 via-[#FBBC05]/10 to-[#34A853]/10">
+
+      {/* Hero section with dynamic event title */}
       <div className="relative overflow-hidden bg-gradient-to-r from-[#4285F4] via-[#EA4335] to-[#FBBC05] py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -103,10 +109,10 @@ export default function RegistrationPage() {
           className="max-w-4xl mx-auto px-6 text-center text-white"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Cloud Study Jam 2026
+            {event.title}
           </h1>
           <p className="text-xl opacity-90">
-            Learn cloud computing with hands-on labs and expert guidance
+            {event.date} • {event.location}
           </p>
         </motion.div>
 
@@ -126,6 +132,8 @@ export default function RegistrationPage() {
 
       <div className="max-w-6xl mx-auto px-6 mt-6 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Dynamic event details card */}
           <div className="lg:col-span-1 space-y-6">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -140,36 +148,32 @@ export default function RegistrationPage() {
                 <div className="flex items-start space-x-3">
                   <Calendar className="w-5 h-5 text-[#4285F4] mt-0.5" />
                   <div>
-                    <div className="font-medium text-gray-900">
-                      March 15, 2026
-                    </div>
-                    <div className="text-sm text-gray-600">Friday</div>
+                    <div className="font-medium text-gray-900">{event.date}</div>
+                    <div className="text-sm text-gray-600">{event.day}</div>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <Clock className="w-5 h-5 text-[#EA4335] mt-0.5" />
                   <div>
-                    <div className="font-medium text-gray-900">
-                      2:00 PM - 5:00 PM
-                    </div>
-                    <div className="text-sm text-gray-600">3 hours</div>
+                    <div className="font-medium text-gray-900">{event.time}</div>
+                    <div className="text-sm text-gray-600">{event.duration}</div>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <MapPin className="w-5 h-5 text-[#34A853] mt-0.5" />
                   <div>
-                    <div className="font-medium text-gray-900">Google Meet</div>
-                    <div className="text-sm text-gray-600">Online Event</div>
+                    <div className="font-medium text-gray-900">{event.location}</div>
+                    <div className="text-sm text-gray-600">{event.locationType}</div>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <Users className="w-5 h-5 text-[#FBBC05] mt-0.5" />
                   <div>
                     <div className="font-medium text-gray-900">
-                      73 / 100 Registered
+                      {event.registered} / {event.capacity} Registered
                     </div>
                     <div className="text-sm text-gray-600">
-                      27 spots remaining
+                      {event.capacity - event.registered} spots remaining
                     </div>
                   </div>
                 </div>
@@ -177,6 +181,7 @@ export default function RegistrationPage() {
             </motion.div>
           </div>
 
+          {/* Registration form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -184,7 +189,7 @@ export default function RegistrationPage() {
             className="lg:col-span-2 bg-white rounded-2xl p-8 shadow-lg border border-gray-200"
           >
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Register for Event
+              Register for {event.title}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -196,9 +201,7 @@ export default function RegistrationPage() {
                   type="text"
                   required
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Enter your full name"
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                 />
@@ -212,9 +215,7 @@ export default function RegistrationPage() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="your.email@example.com"
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                 />
@@ -228,9 +229,7 @@ export default function RegistrationPage() {
                   type="tel"
                   required
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="+1 (555) 000-0000"
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                 />
@@ -247,8 +246,7 @@ export default function RegistrationPage() {
             </form>
 
             <p className="text-xs text-gray-500 mt-4 text-center">
-              By registering, you agree to receive event updates and
-              notifications
+              By registering, you agree to receive event updates and notifications
             </p>
           </motion.div>
         </div>
@@ -256,4 +254,3 @@ export default function RegistrationPage() {
     </div>
   );
 }
-

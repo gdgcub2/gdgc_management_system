@@ -61,7 +61,6 @@ export default function EventManagementPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900">Event Management</h1>
-          <p className="text-gray-600 mt-1">Create and manage your events</p>
         </div>
       </div>
 

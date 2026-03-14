@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import { Award, Calendar, Trophy, Star, Download } from "lucide-react";
+import Link from "next/link";
 
 const userProfile = {
   name: "Alex Morgan",
@@ -29,9 +30,9 @@ const badges = [
 ];
 
 const upcomingEvents = [
-  { name: "AI Workshop", date: "March 20, 2026", time: "2:00 PM", spots: 45 },
-  { name: "Hackathon 2026", date: "March 25, 2026", time: "9:00 AM", spots: 28 },
-  { name: "Flutter Bootcamp", date: "April 5, 2026", time: "10:00 AM", spots: 67 },
+  {id: "ai-workshop-2026", name: "AI Workshop", date: "March 20, 2026", time: "2:00 PM", spots: 45 },
+  {id: "hackathon-2026", name: "Hackathon 2026", date: "March 25, 2026", time: "9:00 AM", spots: 28 },
+  { id: "flutter-bootcamp-2026", name: "Flutter Bootcamp", date: "April 5, 2026", time: "10:00 AM", spots: 67 },
 ];
 
 export default function Page() {
@@ -194,9 +195,12 @@ export default function Page() {
                 <div className="text-sm text-gray-600 mb-2">{event.date} • {event.time}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-gray-600">{event.spots} spots left</div>
-                  <button className="px-3 py-1 bg-[#4285F4] hover:bg-[#4285F4]/90 text-white text-xs rounded-lg transition-colors">
-                    Register
-                  </button>
+                  <Link
+                     href={`/register/${event.id}`}
+                     className="px-3 py-1 bg-[#4285F4] hover:bg-[#4285F4]/90 text-white text-xs rounded-lg transition-colors"
+                   > 
+                  Register
+                  </Link>
                 </div>
               </div>
             ))}
