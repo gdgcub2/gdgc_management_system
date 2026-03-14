@@ -7,15 +7,18 @@ import {
   Users,
   TrendingUp,
   Clock,
-  CheckCircle,
-  AlertCircle,
   Plus,
   Edit,
   QrCode,
   Award,
   Eye,
   MoreVertical,
+  X,
 } from "lucide-react";
+import { useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import * as Slider from "@radix-ui/react-slider";
+import * as Switch from "@radix-ui/react-switch";
 
 const upcomingEvents = [
   {
@@ -128,6 +131,10 @@ const pendingTasks = [
 ];
 
 export default function EventManagerDashboardPage() {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [capacity, setCapacity] = useState([100]);
+  const [autoClose, setAutoClose] = useState(false);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -139,14 +146,143 @@ export default function EventManagerDashboardPage() {
             Manage your events and track performance
           </p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#4285F4] to-[#4285F4]/80 text-white rounded-lg shadow-lg hover:opacity-90 transition-opacity"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Create Event</span>
-        </motion.button>
+
+        <Dialog.Root open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <Dialog.Trigger asChild>
+  <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#4285F4] to-[#4285F4]/80 text-white rounded-lg shadow-lg hover:opacity-90 transition-opacity">
+    <Plus className="w-5 h-5" />
+    <span>Create Event</span>
+  </button>
+</Dialog.Trigger>
+
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
+            <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto z-50">
+              <div className="flex items-center justify-between mb-6">
+                <Dialog.Title className="text-2xl font-semibold text-gray-900">
+                  Create New Event
+                </Dialog.Title>
+                <Dialog.Close className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                  <X className="w-5 h-5 text-gray-500" />
+                </Dialog.Close>
+              </div>
+
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Event Title
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter event title"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Time
+                    </label>
+                    <input
+                      type="time"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter venue or online link"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Describe your event..."
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent resize-none"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Capacity: {capacity[0]} participants
+                    </label>
+                    <Slider.Root
+                      value={capacity}
+                      onValueChange={setCapacity}
+                      min={10}
+                      max={500}
+                      step={10}
+                      className="relative flex items-center w-full h-5"
+                    >
+                      <Slider.Track className="relative h-2 flex-1 rounded-full bg-gray-200">
+                        <Slider.Range className="absolute h-full rounded-full bg-[#4285F4]" />
+                      </Slider.Track>
+                      <Slider.Thumb className="block w-5 h-5 rounded-full bg-white border-2 border-[#4285F4] shadow focus:outline-none" />
+                    </Slider.Root>
+                  </div>
+
+                  <div className="md:col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        Auto-close registration
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Automatically close when capacity is reached
+                      </div>
+                    </div>
+                    <Switch.Root
+                      checked={autoClose}
+                      onCheckedChange={setAutoClose}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        autoClose ? "bg-[#4285F4]" : "bg-gray-300"
+                      }`}
+                    >
+                      <Switch.Thumb
+                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                          autoClose ? "translate-x-6" : "translate-x-1"
+                        }`}
+                      />
+                    </Switch.Root>
+                  </div>
+                </div>
+
+                <div className="flex space-x-3 pt-2">
+                  <Dialog.Close asChild>
+                    <button className="flex-1 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                      Cancel
+                    </button>
+                  </Dialog.Close>
+                  <button
+                    onClick={() => setIsCreateModalOpen(false)}
+                    className="flex-1 py-3 bg-gradient-to-r from-[#4285F4] to-[#4285F4]/80 text-white rounded-lg hover:opacity-90 transition-opacity font-medium"
+                  >
+                    Create Event
+                  </button>
+                </div>
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -291,7 +427,9 @@ export default function EventManagerDashboardPage() {
                         Attendance
                       </div>
                       <div className="text-2xl font-bold text-gray-900">
-                        {Math.round((event.attendance / event.registered) * 100)}
+                        {Math.round(
+                          (event.attendance / event.registered) * 100
+                        )}
                         %
                       </div>
                       <div className="text-xs text-gray-500">
@@ -390,9 +528,7 @@ export default function EventManagerDashboardPage() {
                 <div className="w-10 h-10 rounded-lg bg-[#4285F4] flex items-center justify-center">
                   <Calendar className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-medium text-gray-900">
-                  Manage Events
-                </span>
+                <span className="font-medium text-gray-900">Manage Events</span>
               </Link>
               <Link
                 href="/dashboard/attendance"
@@ -434,4 +570,3 @@ export default function EventManagerDashboardPage() {
     </div>
   );
 }
-

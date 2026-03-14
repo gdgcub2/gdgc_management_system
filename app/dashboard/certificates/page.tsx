@@ -13,10 +13,36 @@ import { useState } from "react";
 import * as Switch from "@radix-ui/react-switch";
 import * as Tabs from "@radix-ui/react-tabs";
 
+const fontOptions = [
+  { label: "Serif", value: "font-serif" },
+  { label: "Sans Serif", value: "font-sans" },
+  { label: "Monospace", value: "font-mono" },
+];
+
+const backgroundOptions = [
+  {
+    label: "White",
+    preview: "bg-white",
+    cert: "bg-white",
+  },
+  {
+    label: "Blue",
+    preview: "bg-gradient-to-br from-blue-50 to-blue-100",
+    cert: "bg-gradient-to-br from-blue-50 to-blue-100",
+  },
+  {
+    label: "Green",
+    preview: "bg-gradient-to-br from-green-50 to-green-100",
+    cert: "bg-gradient-to-br from-green-50 to-green-100",
+  },
+];
+
 export default function CertificatesPage() {
   const [autoGenerate, setAutoGenerate] = useState(true);
   const [autoEmail, setAutoEmail] = useState(true);
   const [verificationId, setVerificationId] = useState("");
+  const [selectedFont, setSelectedFont] = useState(fontOptions[0].value);
+  const [selectedBg, setSelectedBg] = useState(0);
   const [verificationResult, setVerificationResult] = useState<{
     valid: boolean;
     name?: string;
@@ -77,7 +103,9 @@ export default function CertificatesPage() {
                 Certificate Preview
               </h3>
 
-              <div className="bg-gradient-to-br from-gray-50 to-white border-4 border-[#4285F4] rounded-xl p-12 aspect-[1.4/1] relative">
+              <div
+                className={`${backgroundOptions[selectedBg].cert} ${selectedFont} border-4 border-[#4285F4] rounded-xl p-12 aspect-[1.4/1] relative`}
+              >
                 <div className="text-center mb-8">
                   <div className="flex justify-center mb-4">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#4285F4] via-[#EA4335] to-[#FBBC05] flex items-center justify-center">
@@ -142,10 +170,16 @@ export default function CertificatesPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Font Style
                     </label>
-                    <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4]">
-                      <option>Serif</option>
-                      <option>Sans Serif</option>
-                      <option>Monospace</option>
+                    <select
+                      value={selectedFont}
+                      onChange={(e) => setSelectedFont(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4]"
+                    >
+                      {fontOptions.map((font) => (
+                        <option key={font.value} value={font.value}>
+                          {font.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -154,9 +188,17 @@ export default function CertificatesPage() {
                       Background
                     </label>
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="aspect-square bg-white border-2 border-[#4285F4] rounded-lg" />
-                      <div className="aspect-square bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg cursor-pointer hover:opacity-80" />
-                      <div className="aspect-square bg-gradient-to-br from-green-50 to-green-100 rounded-lg cursor-pointer hover:opacity-80" />
+                      {backgroundOptions.map((bg, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setSelectedBg(index)}
+                          className={`aspect-square ${bg.preview} rounded-lg cursor-pointer hover:opacity-80 transition-all ${
+                            selectedBg === index
+                              ? "ring-2 ring-[#4285F4] ring-offset-2"
+                              : "border border-gray-200"
+                          }`}
+                        />
+                      ))}
                     </div>
                   </div>
 
@@ -376,4 +418,3 @@ export default function CertificatesPage() {
     </div>
   );
 }
-
