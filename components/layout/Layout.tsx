@@ -69,7 +69,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4285F4] via-[#EA4335] to-[#FBBC05] flex items-center justify-center">
                   <span className="text-white text-sm font-bold">G</span>
                 </div>
-                <span className="font-semibold text-gray-900">GDGC Mgmt</span>
+                <span className="font-semibold text-gray-900">GDGC Management</span>
               </div>
             ) : (
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4285F4] via-[#EA4335] to-[#FBBC05] flex items-center justify-center">
