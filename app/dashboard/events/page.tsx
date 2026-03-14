@@ -1,9 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Calendar, MapPin, Edit, Trash2, Eye } from "lucide-react";
+import { Calendar, MapPin, Edit, Trash2, Eye, X } from "lucide-react";
+import { useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import Image from "next/image";
 
-const events = [
+const initialEvents = [
   {
     id: 1,
     title: "Cloud Study Jam",
@@ -54,17 +57,74 @@ const events = [
   },
 ];
 
+type Event = typeof initialEvents[0];
+
 export default function EventManagementPage() {
+  const [events, setEvents] = useState(initialEvents);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  // Edit form state
+  const [editForm, setEditForm] = useState({
+    title: "",
+    date: "",
+    time: "",
+    location: "",
+    status: "",
+  });
+
+  const handleView = (event: Event) => {
+    setSelectedEvent(event);
+    setViewOpen(true);
+  };
+
+  const handleEdit = (event: Event) => {
+    setSelectedEvent(event);
+    setEditForm({
+      title: event.title,
+      date: event.date,
+      time: event.time,
+      location: event.location,
+      status: event.status,
+    });
+    setEditOpen(true);
+  };
+
+  const handleDelete = (event: Event) => {
+    setSelectedEvent(event);
+    setDeleteOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (!selectedEvent) return;
+    setEvents((prev) =>
+      prev.map((e) =>
+        e.id === selectedEvent.id
+          ? { ...e, ...editForm }
+          : e
+      )
+    );
+    setEditOpen(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!selectedEvent) return;
+    setEvents((prev) => prev.filter((e) => e.id !== selectedEvent.id));
+    setDeleteOpen(false);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900">Event Management</h1>
+          <p className="text-gray-600 mt-1">View and manage your events</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {events.map((event, index) => (
           <motion.div
             key={event.id}
@@ -74,11 +134,12 @@ export default function EventManagementPage() {
             className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-lg transition-shadow"
           >
             <div className="relative h-48 overflow-hidden">
-              <img
-                src={event.image}
-                alt={event.title}
-                className="w-full h-full object-cover"
-              />
+            <Image
+  src={event.image}
+  alt={event.title}
+  fill
+  className="object-cover"
+/>
               <div className="absolute top-4 right-4">
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
@@ -137,15 +198,24 @@ export default function EventManagementPage() {
               </div>
 
               <div className="mt-4 flex items-center space-x-2">
-                <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                <button
+                  onClick={() => handleView(event)}
+                  className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
                   <Eye className="w-4 h-4" />
                   <span className="text-sm">View</span>
                 </button>
-                <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-[#4285F4] hover:bg-[#4285F4]/90 text-white rounded-lg transition-colors">
+                <button
+                  onClick={() => handleEdit(event)}
+                  className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-[#4285F4] hover:bg-[#4285F4]/90 text-white rounded-lg transition-colors"
+                >
                   <Edit className="w-4 h-4" />
                   <span className="text-sm">Edit</span>
                 </button>
-                <button className="p-2 bg-red-50 hover:bg-red-100 text-[#EA4335] rounded-lg transition-colors">
+                <button
+                  onClick={() => handleDelete(event)}
+                  className="p-2 bg-red-50 hover:bg-red-100 text-[#EA4335] rounded-lg transition-colors"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -153,6 +223,213 @@ export default function EventManagementPage() {
           </motion.div>
         ))}
       </div>
+
+      {/* ── VIEW MODAL ── */}
+      <Dialog.Root open={viewOpen} onOpenChange={setViewOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-lg z-50 overflow-hidden">
+            {selectedEvent && (
+              <>
+                <div className="relative h-48 overflow-hidden">
+                <Image
+                 src={selectedEvent.image}
+                 alt={selectedEvent.title}
+                 fill
+                 className="object-cover"
+                />
+                  <div className="absolute top-4 right-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
+                        selectedEvent.status === "Upcoming"
+                          ? "bg-blue-500/90 text-white"
+                          : selectedEvent.status === "Ongoing"
+                          ? "bg-green-500/90 text-white"
+                          : "bg-gray-500/90 text-white"
+                      }`}
+                    >
+                      {selectedEvent.status}
+                    </span>
+                  </div>
+                  <Dialog.Close className="absolute top-4 left-4 p-2 bg-white/80 hover:bg-white rounded-lg transition-colors">
+                    <X className="w-4 h-4 text-gray-700" />
+                  </Dialog.Close>
+                </div>
+
+                <div className="p-6">
+                  <Dialog.Title className="text-2xl font-semibold text-gray-900 mb-4">
+                    {selectedEvent.title}
+                  </Dialog.Title>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <Calendar className="w-4 h-4 text-[#4285F4]" />
+                      <span>{selectedEvent.date} • {selectedEvent.time}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <MapPin className="w-4 h-4 text-[#34A853]" />
+                      <span>{selectedEvent.location}</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-gray-600">Capacity</span>
+                      <span className="font-medium text-gray-900">
+                        {selectedEvent.registered}/{selectedEvent.capacity}
+                      </span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#4285F4] to-[#34A853]"
+                        style={{ width: `${(selectedEvent.registered / selectedEvent.capacity) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    <div className="bg-blue-50 rounded-lg p-3">
+                      <div className="text-2xl font-semibold text-[#4285F4]">{selectedEvent.registered}</div>
+                      <div className="text-xs text-gray-600">Registered</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3">
+                      <div className="text-2xl font-semibold text-[#34A853]">{selectedEvent.checkedIn}</div>
+                      <div className="text-xs text-gray-600">Checked-in</div>
+                    </div>
+                  </div>
+
+                  <Dialog.Close asChild>
+                    <button className="mt-6 w-full py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                      Close
+                    </button>
+                  </Dialog.Close>
+                </div>
+              </>
+            )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      {/* ── EDIT MODAL ── */}
+      <Dialog.Root open={editOpen} onOpenChange={setEditOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg z-50">
+            <div className="flex items-center justify-between mb-6">
+              <Dialog.Title className="text-xl font-semibold text-gray-900">
+                Edit Event
+              </Dialog.Title>
+              <Dialog.Close className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <X className="w-5 h-5 text-gray-500" />
+              </Dialog.Close>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Event Title</label>
+                <input
+                  type="text"
+                  value={editForm.title}
+                  onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                  <input
+                    type="text"
+                    value={editForm.date}
+                    onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                  <input
+                    type="text"
+                    value={editForm.time}
+                    onChange={(e) => setEditForm({ ...editForm, time: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <input
+                  type="text"
+                  value={editForm.location}
+                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select
+                  value={editForm.status}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+                >
+                  <option value="Upcoming">Upcoming</option>
+                  <option value="Ongoing">Ongoing</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
+              <div className="flex space-x-3 pt-2">
+                <Dialog.Close asChild>
+                  <button className="flex-1 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    Cancel
+                  </button>
+                </Dialog.Close>
+                <button
+                  onClick={handleSaveEdit}
+                  className="flex-1 py-3 bg-gradient-to-r from-[#4285F4] to-[#4285F4]/80 text-white rounded-lg hover:opacity-90 transition-opacity font-medium"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      {/* ── DELETE CONFIRMATION MODAL ── */}
+      <Dialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md z-50">
+            <div className="flex items-center justify-between mb-6">
+              <Dialog.Title className="text-xl font-semibold text-gray-900">
+                Delete Event
+              </Dialog.Title>
+              <Dialog.Close className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <X className="w-5 h-5 text-gray-500" />
+              </Dialog.Close>
+            </div>
+
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-gray-900">{selectedEvent?.title}</span>?
+              This action cannot be undone.
+            </p>
+
+            <div className="flex space-x-3">
+              <Dialog.Close asChild>
+                <button className="flex-1 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                  Cancel
+                </button>
+              </Dialog.Close>
+              <button
+                onClick={handleConfirmDelete}
+                className="flex-1 py-3 bg-[#EA4335] hover:bg-[#EA4335]/90 text-white rounded-lg transition-colors font-medium"
+              >
+                Delete
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

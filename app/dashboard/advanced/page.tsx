@@ -437,8 +437,7 @@ export default function AdvancedFeaturesPage() {
                   Event Reminder: Cloud Study Jam
                 </div>
                 <div className="text-xs text-gray-600 mt-1">
-                  Your event starts in 1 hour. Don't forget to join!
-                </div>
+                Your event starts in 1 hour. Don&apos;t forget to join!                </div>
               </div>
             </div>
             <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-200">
@@ -448,8 +447,7 @@ export default function AdvancedFeaturesPage() {
                   New Badge Earned: Early Bird 🌅
                 </div>
                 <div className="text-xs text-gray-600 mt-1">
-                  Congratulations! You've unlocked a new achievement.
-                </div>
+                Congratulations! You&apos;ve unlocked a new achievement.                </div>
               </div>
             </div>
           </div>
