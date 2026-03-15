@@ -1,6 +1,9 @@
 "use client";
 
+// Animation library
 import { motion } from "motion/react";
+
+// Lucide icons for stat cards and event list
 import {
   Calendar,
   Users,
@@ -9,6 +12,8 @@ import {
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
+
+// Recharts components for data visualization
 import {
   LineChart,
   Line,
@@ -23,8 +28,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
+// React hooks
 import { useState, useEffect } from "react";
 
+// Stat cards data for the top summary section
 const stats = [
   {
     name: "Total Events",
@@ -64,6 +72,7 @@ const stats = [
   },
 ];
 
+// Data for the event growth line chart
 const eventData = [
   { month: "Jan", events: 3 },
   { month: "Feb", events: 5 },
@@ -73,6 +82,7 @@ const eventData = [
   { month: "Jun", events: 8 },
 ];
 
+// Data for the attendance bar chart
 const attendanceData = [
   { name: "Workshop A", attendance: 85 },
   { name: "Hackathon", attendance: 92 },
@@ -80,32 +90,20 @@ const attendanceData = [
   { name: "Bootcamp", attendance: 95 },
 ];
 
+// Data for the member distribution pie chart
 const memberData = [
   { name: "Active", value: 856, color: "#34A853" },
   { name: "Inactive", value: 428, color: "#EA4335" },
 ];
 
+// Recent events list for the bottom section
 const recentEvents = [
-  {
-    name: "Cloud Study Jam",
-    date: "Mar 8, 2026",
-    status: "Upcoming",
-    registered: 45,
-  },
-  {
-    name: "Mobile Dev Workshop",
-    date: "Mar 6, 2026",
-    status: "Ongoing",
-    registered: 67,
-  },
-  {
-    name: "Web Dev Bootcamp",
-    date: "Mar 2, 2026",
-    status: "Completed",
-    registered: 89,
-  },
+  { name: "Cloud Study Jam", date: "Mar 8, 2026", status: "Upcoming", registered: 45 },
+  { name: "Mobile Dev Workshop", date: "Mar 6, 2026", status: "Ongoing", registered: 67 },
+  { name: "Web Dev Bootcamp", date: "Mar 2, 2026", status: "Completed", registered: 89 },
 ];
 
+// Animated number counter component — counts up from 0 to the target value
 function AnimatedCounter({ value }: { value: number | string }) {
   const [count, setCount] = useState(0);
 
@@ -135,93 +133,100 @@ function AnimatedCounter({ value }: { value: number | string }) {
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
+
+      {/* Page header */}
       <div>
-        <h1 className="text-3xl font-semibold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
+        <h1 className="text-xl md:text-3xl font-semibold text-gray-900">Dashboard</h1>
+        <p className="text-sm md:text-base text-gray-600 mt-1">
           Welcome to GDGC Smart Event Management System
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ── STAT CARDS ── */}
+      {/* Responsive: 1 col on mobile, 2 on sm, 4 on lg */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.name}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className={`${stat.bgColor} rounded-2xl p-6 border border-gray-200/50 backdrop-blur-sm`}
+            className={`${stat.bgColor} rounded-2xl p-4 md:p-6 border border-gray-200/50`}
           >
             <div className="flex items-center justify-between">
-              <div
-                className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}
-              >
-                <stat.icon className="w-6 h-6 text-white" />
+              {/* Stat icon */}
+              <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
+                <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <div
-                className={`flex items-center space-x-1 text-sm ${
-                  stat.trend === "up" ? "text-green-600" : "text-red-600"
-                }`}
-              >
+              {/* Trend indicator */}
+              <div className={`flex items-center space-x-1 text-xs md:text-sm ${
+                stat.trend === "up" ? "text-green-600" : "text-red-600"
+              }`}>
                 {stat.trend === "up" ? (
-                  <ArrowUp className="w-4 h-4" />
+                  <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
                 ) : (
-                  <ArrowDown className="w-4 h-4" />
+                  <ArrowDown className="w-3 h-3 md:w-4 md:h-4" />
                 )}
                 <span>{stat.change}</span>
               </div>
             </div>
             <div className="mt-4">
-              <div className="text-3xl font-semibold text-gray-900">
+              <div className="text-2xl md:text-3xl font-semibold text-gray-900">
                 <AnimatedCounter value={stat.value} />
               </div>
-              <div className="text-sm text-gray-600 mt-1">{stat.name}</div>
+              <div className="text-xs md:text-sm text-gray-600 mt-1">{stat.name}</div>
             </div>
           </motion.div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* ── CHARTS ROW ── */}
+      {/* Responsive: 1 col on mobile, 2 cols on lg */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
+
+        {/* Event growth line chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
+          className="bg-white rounded-2xl p-4 md:p-6 border border-gray-200 shadow-sm"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
             Event Growth Over Time
           </h3>
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={200}>
             <LineChart data={eventData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="month" stroke="#666" />
-              <YAxis stroke="#666" />
+              <XAxis dataKey="month" stroke="#666" tick={{ fontSize: 12 }} />
+              <YAxis stroke="#666" tick={{ fontSize: 12 }} />
               <Tooltip />
               <Line
                 type="monotone"
                 dataKey="events"
                 stroke="#4285F4"
                 strokeWidth={3}
-                dot={{ fill: "#4285F4", r: 5 }}
+                dot={{ fill: "#4285F4", r: 4 }}
               />
             </LineChart>
           </ResponsiveContainer>
         </motion.div>
 
+        {/* Attendance by event bar chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
+          className="bg-white rounded-2xl p-4 md:p-6 border border-gray-200 shadow-sm"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
             Attendance by Event
           </h3>
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={attendanceData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="name" stroke="#666" />
-              <YAxis stroke="#666" />
+              <XAxis dataKey="name" stroke="#666" tick={{ fontSize: 10 }} />
+              <YAxis stroke="#666" tick={{ fontSize: 12 }} />
               <Tooltip />
               <Bar dataKey="attendance" fill="#34A853" radius={[8, 8, 0, 0]} />
             </BarChart>
@@ -229,14 +234,18 @@ export default function DashboardPage() {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* ── BOTTOM ROW ── */}
+      {/* Pie chart + recent events list */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
+
+        {/* Member distribution pie chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
+          className="bg-white rounded-2xl p-4 md:p-6 border border-gray-200 shadow-sm"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
             Member Distribution
           </h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -249,7 +258,7 @@ export default function DashboardPage() {
                 label={({ name, percent }) =>
                   `${name} ${(percent * 100).toFixed(0)}%`
                 }
-                outerRadius={80}
+                outerRadius={70}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -262,48 +271,46 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </motion.div>
 
+        {/* Recent events list */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
+          className="lg:col-span-2 bg-white rounded-2xl p-4 md:p-6 border border-gray-200 shadow-sm"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
             Recent Events
           </h3>
           <div className="space-y-3">
             {recentEvents.map((event, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between p-3 md:p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4285F4] to-[#34A853] flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-white" />
+                <div className="flex items-center space-x-3 md:space-x-4">
+                  {/* Event icon */}
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-br from-[#4285F4] to-[#34A853] flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-5 h-5 md:w-6 md:h-6 text-white" />
                   </div>
                   <div>
-                    <div className="font-medium text-gray-900">
-                      {event.name}
-                    </div>
-                    <div className="text-sm text-gray-600">{event.date}</div>
+                    <div className="font-medium text-gray-900 text-sm md:text-base">{event.name}</div>
+                    <div className="text-xs md:text-sm text-gray-600">{event.date}</div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <div className="text-sm text-gray-600">Registered</div>
-                    <div className="font-semibold text-gray-900">
-                      {event.registered}
-                    </div>
+                <div className="flex items-center space-x-2 md:space-x-4">
+                  {/* Registered count */}
+                  <div className="text-right hidden sm:block">
+                    <div className="text-xs md:text-sm text-gray-600">Registered</div>
+                    <div className="font-semibold text-gray-900 text-sm md:text-base">{event.registered}</div>
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      event.status === "Upcoming"
-                        ? "bg-blue-100 text-blue-700"
-                        : event.status === "Ongoing"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
+                  {/* Status badge */}
+                  <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium ${
+                    event.status === "Upcoming"
+                      ? "bg-blue-100 text-blue-700"
+                      : event.status === "Ongoing"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}>
                     {event.status}
                   </span>
                 </div>
@@ -315,5 +322,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-

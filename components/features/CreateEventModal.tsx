@@ -1,23 +1,75 @@
 "use client";
 
+// React hooks
 import { useState } from "react";
+
+// Radix UI components for modal, tabs, slider, and toggle
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Slider from "@radix-ui/react-slider";
 import * as Switch from "@radix-ui/react-switch";
 
-// Props for the modal
+// Shape of a new event created from the modal
+export interface NewEvent {
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  capacity: number;
+  autoClose: boolean;
+}
+
+// Props for the modal — open state and callbacks
 interface CreateEventModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreateEvent?: (event: NewEvent) => void;
 }
 
-export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) {
-  // Capacity slider state
+export function CreateEventModal({ open, onOpenChange, onCreateEvent }: CreateEventModalProps) {
+  // Capacity slider value
   const [capacity, setCapacity] = useState([100]);
 
-  // Auto-close registration toggle state
+  // Auto-close registration toggle
   const [autoClose, setAutoClose] = useState(false);
+
+  // Form field values
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  // Reset form fields to defaults
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setTime("");
+    setCapacity([100]);
+    setAutoClose(false);
+  };
+
+  // Handle create button — pass new event data to parent and close modal
+  const handleCreate = () => {
+    if (onCreateEvent) {
+      onCreateEvent({
+        title: title || "Untitled Event",
+        description,
+        date: date || "TBD",
+        time: time || "TBD",
+        capacity: capacity[0],
+        autoClose,
+      });
+    }
+    resetForm();
+    onOpenChange(false);
+  };
+
+  // Handle cancel — reset form and close
+  const handleCancel = () => {
+    resetForm();
+    onOpenChange(false);
+  };
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -55,41 +107,41 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
               {/* Basic Info Tab */}
               <Tabs.Content value="basic" className="mt-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Event Title
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Event Title</label>
                   <input
                     type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter event title"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                   <textarea
                     rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter event description"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
                     <input
                       type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Time
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
                     <input
                       type="time"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
                     />
                   </div>
@@ -121,12 +173,8 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
               <Tabs.Content value="registration" className="mt-6 space-y-4">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
-                    <div className="font-medium text-gray-900">
-                      Auto-close Registration
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Close when capacity is reached
-                    </div>
+                    <div className="font-medium text-gray-900">Auto-close Registration</div>
+                    <div className="text-sm text-gray-600">Close when capacity is reached</div>
                   </div>
                   <Switch.Root
                     checked={autoClose}
@@ -135,11 +183,9 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
                       autoClose ? "bg-[#4285F4]" : "bg-gray-300"
                     }`}
                   >
-                    <Switch.Thumb
-                      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                        autoClose ? "translate-x-6" : "translate-x-1"
-                      }`}
-                    />
+                    <Switch.Thumb className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                      autoClose ? "translate-x-6" : "translate-x-1"
+                    }`} />
                   </Switch.Root>
                 </div>
               </Tabs.Content>
@@ -148,13 +194,13 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
             {/* Action buttons */}
             <div className="mt-6 flex items-center justify-end space-x-3">
               <button
-                onClick={() => onOpenChange(false)}
+                onClick={handleCancel}
                 className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
-                onClick={() => onOpenChange(false)}
+                onClick={handleCreate}
                 className="px-4 py-2 bg-gradient-to-r from-[#4285F4] to-[#4285F4]/80 text-white rounded-lg hover:opacity-90 transition-opacity"
               >
                 Create Event
