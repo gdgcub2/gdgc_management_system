@@ -4,7 +4,7 @@
 import { motion } from "motion/react";
 
 // Lucide icons
-import { Shield, Settings, Users, X } from "lucide-react";
+import { Shield, Settings, Users, X, Search } from "lucide-react";
 
 // React hooks
 import { useState } from "react";
@@ -50,7 +50,7 @@ const permissionsList = [
   { id: "manage_roles", name: "Manage Roles", description: "Edit roles and permissions" },
 ];
 
-// Default permissions per role — used to initialize the permission matrix
+// Default permissions per role
 const defaultPermissions: Record<string, string[]> = {
   "Super Admin": permissionsList.map((p) => p.id),
   "Event Manager": ["create_events", "edit_events", "scan_qr", "issue_certificates", "view_analytics"],
@@ -58,11 +58,13 @@ const defaultPermissions: Record<string, string[]> = {
 };
 
 // Sample users for the user assignment section
-const users = [
+const allUsers = [
   { name: "John Doe", email: "john@example.com", role: "Super Admin" },
   { name: "Jane Smith", email: "jane@example.com", role: "Event Manager" },
   { name: "Bob Johnson", email: "bob@example.com", role: "Event Manager" },
   { name: "Alice Williams", email: "alice@example.com", role: "Member" },
+  { name: "Sarah Ahmed", email: "sarah@example.com", role: "Member" },
+  { name: "Mike Chen", email: "mike@example.com", role: "Event Manager" },
 ];
 
 // TypeScript type for a role object
@@ -78,8 +80,11 @@ export default function RoleManagementPage() {
   // Controls whether the role settings modal is open
   const [roleModalOpen, setRoleModalOpen] = useState(false);
 
-  // Temporary permissions edited inside modal — not saved until user clicks Save
+  // Temporary permissions edited inside modal before saving
   const [tempPermissions, setTempPermissions] = useState<string[]>([]);
+
+  // Search query for the user assignment section
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Open the role settings modal and load current permissions into temp state
   const handleOpenRoleModal = (role: Role) => {
@@ -121,6 +126,16 @@ export default function RoleManagementPage() {
     });
   };
 
+  // Filter users based on search query — matches name, email, or role
+  const filteredUsers = allUsers.filter((user) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query) ||
+      user.role.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div className="space-y-4 md:space-y-6">
 
@@ -131,7 +146,6 @@ export default function RoleManagementPage() {
       </div>
 
       {/* ── ROLE CARDS ── */}
-      {/* Responsive: 1 col on mobile, 3 cols on md */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {initialRoles.map((role, index) => (
           <motion.div
@@ -145,7 +159,6 @@ export default function RoleManagementPage() {
             <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${role.color}`} />
 
             <div className="flex items-start justify-between">
-              {/* Role icon */}
               <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${role.color} shadow-lg`}>
                 <Shield className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
@@ -164,12 +177,10 @@ export default function RoleManagementPage() {
             </div>
 
             <div className="mt-3 md:mt-4 flex items-center justify-between">
-              {/* User count */}
               <div className="flex items-center space-x-2 text-gray-600">
                 <Users className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="text-xs md:text-sm">{role.userCount} users</span>
               </div>
-              {/* Manage Role button — opens role modal */}
               <button
                 onClick={() => handleOpenRoleModal(role)}
                 className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-medium text-white bg-gradient-to-r ${role.color} hover:opacity-90 transition-opacity`}
@@ -251,28 +262,48 @@ export default function RoleManagementPage() {
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
           <h2 className="text-lg md:text-xl font-semibold text-gray-900">User Assignment</h2>
-          {/* Search input */}
+
+          {/* Working search input — filters users by name, email, or role */}
           <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users..."
               className="pl-9 md:pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent w-full sm:w-auto"
             />
-            <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            {/* Clear search button */}
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
           </div>
         </div>
 
+        {/* No results message */}
+        {filteredUsers.length === 0 && (
+          <div className="text-center py-8 text-sm text-gray-500">
+            No users found for &quot;<span className="font-medium">{searchQuery}</span>&quot;
+          </div>
+        )}
+
+        {/* Filtered user list */}
         <div className="space-y-3">
-          {users.map((user, index) => (
+          {filteredUsers.map((user, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 + index * 0.1 }}
+              transition={{ delay: 0.5 + index * 0.05 }}
               className="flex items-center justify-between p-3 md:p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
             >
               <div className="flex items-center space-x-3 md:space-x-4">
-                {/* User avatar */}
+                {/* User avatar with initials */}
                 <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br ${
                   user.role === "Super Admin"
                     ? "from-[#EA4335] to-[#EA4335]/80"
@@ -290,7 +321,10 @@ export default function RoleManagementPage() {
                 </div>
               </div>
               {/* Role selector */}
-              <select className="px-2 md:px-4 py-1.5 md:py-2 bg-white border border-gray-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent">
+              <select
+                defaultValue={user.role}
+                className="px-2 md:px-4 py-1.5 md:py-2 bg-white border border-gray-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
+              >
                 <option value="Super Admin">Super Admin</option>
                 <option value="Event Manager">Event Manager</option>
                 <option value="Member">Member</option>
