@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, User, Users, ArrowLeft } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,8 +12,6 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    organization: "",
-    role: "member",
     password: "",
     confirmPassword: "",
   });
@@ -145,90 +143,6 @@ export default function SignUpPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Organization / Community Name
-              </label>
-              <div className="relative">
-                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  required
-                  value={formData.organization}
-                  onChange={(e) =>
-                    setFormData({ ...formData, organization: e.target.value })
-                  }
-                  placeholder="GDGC Seattle"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Select Your Role
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: "member" })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.role === "member"
-                      ? "border-[#4285F4] bg-blue-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="text-2xl mb-1">👤</div>
-                  <div className="text-xs font-medium text-gray-900">Member</div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    Attend events
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData({ ...formData, role: "event_manager" })
-                  }
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.role === "event_manager"
-                      ? "border-[#34A853] bg-green-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="text-2xl mb-1">📅</div>
-                  <div className="text-xs font-medium text-gray-900">
-                    Event Manager
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    Manage events
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: "admin" })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.role === "admin"
-                      ? "border-[#EA4335] bg-red-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="text-2xl mb-1">👑</div>
-                  <div className="text-xs font-medium text-gray-900">Admin</div>
-                  <div className="text-xs text-gray-600 mt-1">Full access</div>
-                </button>
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                {formData.role === "member" &&
-                  "Join events, earn badges, and track your learning journey"}
-                {formData.role === "event_manager" &&
-                  "Create events, track attendance, and issue certificates"}
-                {formData.role === "admin" &&
-                  "Manage users, events, and access all platform features"}
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -336,16 +250,7 @@ export default function SignUpPage() {
             </Link>
           </div>
         </div>
-
-        <div className="mt-6 text-center">
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-lg border border-white/20">
-            <span className="text-sm text-gray-600">
-              🎉 Start your 14-day free trial. No credit card required.
-            </span>
-          </div>
-        </div>
       </motion.div>
     </div>
   );
 }
-
